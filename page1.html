@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reconstruction Gallery - VideoMimic</title>
+  <title>Warm-start for Generalizable Learning</title>
   <link rel="stylesheet" href="style.css">
   <style>
     body {
@@ -24,6 +24,15 @@
       font-size: 2em;
       color: #333;
       font-family: 'Roboto Mono', monospace;
+    }
+    .gallery-intro {
+      max-width: 900px;
+      margin: 0 auto 40px auto;
+      text-align: center;
+      font-size: 1.1em;
+      line-height: 1.6;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #555;
     }
     .video-grid {
       display: flex;
@@ -70,6 +79,23 @@
     </div>
 
     <h1 class="gallery-page-header">Human + World Reconstruction Gallery</h1>
+    <p class="gallery-intro">
+        A growing body of work on reinforcement learning has demonstrated the effectiveness of initializing policies 
+      with demonstrations prior to task-specific optimization. Rather than viewing such warm-start strategies solely 
+      as useful for accelerating convergence, we frame them as a generalizable learning paradigm. From this perspective, 
+      behavior cloning-base warm up is  not just convenient for sample efficiency, but a tool that stabilizes early 
+      learning dynamics and constrains optimization to behaviorally plausible regions of policy space. 
+        Building on this insight, our proposal focuses on leveraging warm-start methods across different tasks and embodiments. 
+      We evaluated two modifications in four different MuJoCo tasks in the Gymnasium. The first modification follows the 
+      standard approach of pretraining in behavioral cloning (BC) followed by additional fine-tuning of reinforcement learning (RL). 
+      The second adopts a posterior behavior cloning initialization, which more explicitly preserves the structure induced by 
+      the demonstration data during subsequent RL optimization. 
+        Beyond in-domain learning, we further propose investigating the transferability of these warm-start methods under 
+      embodiment changes. After training policies in the original environment, we will modify the morphology of the agents 
+      (e.g., altered limb configurations) and evaluate how efficiently the pretraining policies adapt via RL fine-tuning. 
+      This setting allows us to study how different warm-start strategies influence transfer learning speed and robustness
+      when faces with distribution shifts. 
+    </p>
 
     <div class="video-grid">
       <div class="gallery-video video-placeholder" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">Video 1</div>

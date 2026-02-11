@@ -22,27 +22,25 @@
   </div>
 
   <div class="main-content">
-    <div class="hero-text">VideoMimic</div>
-    <div class="sub-hero-text">Visual imitation enables contextual humanoid control</div>
+    <div class="hero-text">BC → RL transfer</div>
+    <div class="sub-hero-text">Imitation-to-Reinforcement Learning</div>
+
+    <p class="page-intro">
+      We present IMRL, a warm-started RL proposal that studies behavior cloning and posterior behavior cloning as initializations for RL fine-tuning across MuJoCo tasks, with a focus on transfer under embodiment changes.
+    </p>
 
     <!-- Add Authors -->
     <div class="authors">
-      <a href="https://allshire.org/" target="_blank">Arthur Allshire*</a>, <a href="https://hongsukchoi.github.io/" target="_blank">Hongsuk Choi*</a>, <a href="https://www.junyi42.com/" target="_blank">Junyi Zhang*</a>, <a href="https://mcallisterdavid.com/" target="_blank">David McAllister*</a>, <a href="https://antoniomacaronio.github.io/personal-website/#/home/" target="_blank">Anthony Zhang</a>, <a href="https://chungmin99.github.io/" target="_blank">Chung Min Kim</a>,<br>
-      <a href="https://people.eecs.berkeley.edu/~trevor/" target="_blank">Trevor Darrell</a>, <a href="https://people.eecs.berkeley.edu/~pabbeel/" target="_blank">Pieter Abbeel</a>, <a href="https://people.eecs.berkeley.edu/~malik/" target="_blank">Jitendra Malik</a>, <a href="https://people.eecs.berkeley.edu/~kanazawa/" target="_blank">Angjoo Kanazawa.</a>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*:equal contribution)
-      <span class="affiliation">University of California, Berkeley</span>
-      <span class="affiliation" style="color: #555; text-align: center; font-size: 20px; margin-top: 6px;">CoRL 2025, Best Student Paper Award</span>
+      ...
+    </div>
+
+    <!-- Add Authors -->
+    <div class="authors">
+      <a href="https://allshire.org/" target="_blank">Ryan Wang*</a>, <a href="https://hongsukchoi.github.io/" target="_blank">Elissa Matlock*</a>
+      <span class="affiliation">Carnegie Mellon University</span>
+      <span class="affiliation" style="color: #555; text-align: center; font-size: 20px; margin-top: 6px;">16831 Final Project Propsal</span>
     </div>
     <!-- End Authors -->
-
-    <!-- use the video ./figs/videomimic_teaser.mp4 -->
-    <div id="teaser-video" class="video-placeholder" style="width: 100%; aspect-ratio: 16/9; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-family: Arial, sans-serif;">
-      <span>Video not available (GitHub Pages deployment)</span>
-    </div>
-    <!-- Caption for Figure 1 (Teaser Video) -->
-    <p class="figure-caption">
-        <span style="font-variant: small-caps;">VideoMimic</span> is a real-to-sim-to-real pipeline that converts monocular videos into transferable humanoid skills, letting robots learn context-aware behaviors (terrain-traversing, climbing, sitting) in a single policy.
-    </p>
 
     <!-- Add Quick Links Here -->
     <div class="quick-links">
@@ -84,7 +82,7 @@
           </div>
           <!-- Caption text -->
           <p class="figure-caption gallery-caption" style="margin-bottom: 30px;">
-              <b>Human + World Reconstruction:</b> Our reconstruction pipeline can handle videos with multiple humans and complex environments from Internet.
+              <b>Random Actions:</b> For each of the four MuJoCo environments, we showcase videos of agents performing random actions.
           </p>
       </div>
     </div>
@@ -94,11 +92,13 @@
 
 
     <div class="section">
-
-        How can we teach humanoids to climb staircases and sit on chairs using the surrounding environment context? Arguably, the simplest way is to <em>just show them</em>&mdash;casually capture a human motion video and feed it to humanoids.
-        We introduce <span style="font-variant: small-caps;">VideoMimic</span>, a real-to-sim-to-real pipeline that mines everyday videos, jointly reconstructs the humans and the environment, and produces whole-body control policies for humanoid robots that perform the corresponding skills.
-       We demonstrate the results of our pipeline on real humanoid robots, showing robust, repeatable contextual control such as staircase ascents and descents, sitting and standing from chairs and benches, as well as other dynamic whole-body skills&mdash;all from a single policy, conditioned on the environment and global root commands. 
-       <span style="font-variant: small-caps;">VideoMimic</span> offers a scalable path towards teaching humanoids to operate in diverse real-world environments.
+      This paper proposes to study warm-start methods in reinforcement learning as a generalizable learning paradigm 
+      rather than solely as a tool to accelerate convergence. By initializing policies with demonstrations, behavior 
+      cloning–based warm up stabilizes early learning dynamics and constrains optimization to behaviorally plausible 
+      regions of the policy space. We look to evaluate two initialization strategies: standard behavior cloning with 
+      reinforcement learning fine-tuning and posterior behavior cloning with reinforcement learning across four continuous-control 
+      MuJoCo tasks from Gymnasium. To assess transferability, we further propose examining how these warm-started policies adapt 
+      under embodiment changes, such as modified limb configurations, and compare their sample efficiency during downstream fine-tuning.
     
     </div> 
 
