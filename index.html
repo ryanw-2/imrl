@@ -14,7 +14,7 @@
     }
     .method-matrix {
       display: grid;
-      grid-template-columns: 110px repeat(5, minmax(160px, 1fr));
+      grid-template-columns: 110px repeat(6, minmax(160px, 1fr));
       gap: 10px;
       min-width: 900px;
     }
@@ -265,6 +265,10 @@
             <span class="method-abbr">TD3</span>
             <span class="method-full">Off-policy RL</span>
           </div>
+          <div class="matrix-col-header" style="background:#444;">
+            <span class="method-abbr">Random</span>
+            <span class="method-full">Untrained baseline</span>
+          </div>
 
           <!-- ROW: HalfCheetah -->
           <div class="matrix-row-label"><span>HalfCheetah</span></div>
@@ -302,6 +306,13 @@
               <source src="videos/td3_HalfCheetah/td3_HalfCheetah-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-high">~4 000 ret.</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/random_HalfCheetah/random_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ &minus;284</span>
           </div>
 
           <!-- ROW: Hopper -->
@@ -341,6 +352,13 @@
             </video>
             <span class="perf-badge badge-high">~1 500 ret.</span>
           </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/random_Hopper/random_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ 19</span>
+          </div>
 
           <!-- ROW: Walker2d -->
           <div class="matrix-row-label"><span>Walker2d</span></div>
@@ -379,6 +397,13 @@
             </video>
             <span class="perf-badge badge-high">peaks ~2 500</span>
           </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/random_Walker2d/random_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ 3</span>
+          </div>
 
           <!-- ROW: Humanoid -->
           <div class="matrix-row-label"><span>Humanoid</span></div>
@@ -416,6 +441,13 @@
               <source src="videos/td3_Humanoid/td3_Humanoid-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-mid">struggles</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/random_Humanoid/random_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ 123</span>
           </div>
 
         </div><!-- end .method-matrix -->
