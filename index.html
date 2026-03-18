@@ -14,7 +14,7 @@
     }
     .method-matrix {
       display: grid;
-      grid-template-columns: 110px repeat(6, minmax(160px, 1fr));
+      grid-template-columns: 110px repeat(5, minmax(160px, 1fr));
       gap: 10px;
       min-width: 900px;
     }
@@ -183,19 +183,19 @@
       <div class="video-gallery-container">
         <div class="video-gallery" id="videoGalleryReconstruction">
           <video class="gallery-video" controls>
-            <source src="random/Ant-v5_random_seed0-episode-0.mp4" type="video/mp4">
+            <source src="videos/random_HalfCheetah/random_HalfCheetah-episode-0.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
           <video class="gallery-video" controls>
-            <source src="random/HumanoidStand-v5_random.mp4" type="video/mp4">
+            <source src="videos/random_Hopper/random_Hopper-episode-0.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
           <video class="gallery-video" controls>
-            <source src="random/Pusher-v5_random.mp4" type="video/mp4">
+            <source src="videos/random_Walker2d/random_Walker2d-episode-0.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
           <video class="gallery-video" controls>
-            <source src="random/Swimmer-v5_random.mp4" type="video/mp4">
+            <source src="videos/random_Humanoid/random_Humanoid-episode-0.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
@@ -206,8 +206,8 @@
           <button class="gallery-nav right" id="scrollRightBtnReconstruction">&gt;</button>
         </div>
         <p class="figure-caption gallery-caption" style="margin-bottom: 30px;">
-          <b>Random Baselines:</b> Agents acting with random policies across the four MuJoCo
-          environments — Ant, Humanoid Stand, Pusher, and Swimmer. These serve as lower-bound
+          <b>Random Baselines:</b> Agents acting with random policies across the four benchmark
+          environments — HalfCheetah, Hopper, Walker2d, and Humanoid. These serve as lower-bound
           reference points for all method comparisons.
         </p>
       </div>
@@ -265,10 +265,6 @@
             <span class="method-abbr">TD3</span>
             <span class="method-full">Off-policy RL</span>
           </div>
-          <div class="matrix-col-header" style="background:#444;">
-            <span class="method-abbr">Random</span>
-            <span class="method-full">Untrained baseline</span>
-          </div>
 
           <!-- ROW: HalfCheetah -->
           <div class="matrix-row-label"><span>HalfCheetah</span></div>
@@ -306,13 +302,6 @@
               <source src="videos/td3_HalfCheetah/td3_HalfCheetah-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-high">~4 000 ret.</span>
-          </div>
-          <div class="matrix-cell">
-            <video muted loop playsinline preload="metadata"
-                   onmouseenter="this.play()" onmouseleave="this.pause()">
-              <source src="videos/random_HalfCheetah/random_HalfCheetah-episode-0.mp4" type="video/mp4">
-            </video>
-            <span class="perf-badge badge-low">≈ &minus;284</span>
           </div>
 
           <!-- ROW: Hopper -->
@@ -352,13 +341,6 @@
             </video>
             <span class="perf-badge badge-high">~1 500 ret.</span>
           </div>
-          <div class="matrix-cell">
-            <video muted loop playsinline preload="metadata"
-                   onmouseenter="this.play()" onmouseleave="this.pause()">
-              <source src="videos/random_Hopper/random_Hopper-episode-0.mp4" type="video/mp4">
-            </video>
-            <span class="perf-badge badge-low">≈ 19</span>
-          </div>
 
           <!-- ROW: Walker2d -->
           <div class="matrix-row-label"><span>Walker2d</span></div>
@@ -397,13 +379,6 @@
             </video>
             <span class="perf-badge badge-high">peaks ~2 500</span>
           </div>
-          <div class="matrix-cell">
-            <video muted loop playsinline preload="metadata"
-                   onmouseenter="this.play()" onmouseleave="this.pause()">
-              <source src="videos/random_Walker2d/random_Walker2d-episode-0.mp4" type="video/mp4">
-            </video>
-            <span class="perf-badge badge-low">≈ 3</span>
-          </div>
 
           <!-- ROW: Humanoid -->
           <div class="matrix-row-label"><span>Humanoid</span></div>
@@ -441,13 +416,6 @@
               <source src="videos/td3_Humanoid/td3_Humanoid-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-mid">struggles</span>
-          </div>
-          <div class="matrix-cell">
-            <video muted loop playsinline preload="metadata"
-                   onmouseenter="this.play()" onmouseleave="this.pause()">
-              <source src="videos/random_Humanoid/random_Humanoid-episode-0.mp4" type="video/mp4">
-            </video>
-            <span class="perf-badge badge-low">≈ 123</span>
           </div>
 
         </div><!-- end .method-matrix -->
