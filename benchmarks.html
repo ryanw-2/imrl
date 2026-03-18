@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Locomotion Benchmarks – IMRL</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ---- Page-specific overrides ---- */
+    .back-link {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 30px;
+      display: block;
+    }
+    .back-link a { color: #333; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+
+    /* ---- Matrix section ---- */
+    .matrix-section {
+      margin: 40px 0 60px;
+    }
+
+    .matrix-scroll-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .method-matrix {
+      display: grid;
+      /* env-label col + 5 method cols */
+      grid-template-columns: 110px repeat(5, minmax(160px, 1fr));
+      gap: 10px;
+      min-width: 900px;
+    }
+
+    /* Header row cells */
+    .matrix-col-header {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      background: #1b1b1b;
+      color: #fff;
+      padding: 10px 6px;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+    }
+    .matrix-col-header .method-abbr {
+      font-size: 16px;
+      letter-spacing: -0.5px;
+    }
+    .matrix-col-header .method-full {
+      font-size: 10px;
+      font-weight: 400;
+      color: #aaa;
+    }
+    /* Empty top-left corner cell */
+    .matrix-corner {
+      background: transparent;
+    }
+
+    /* Row label cells */
+    .matrix-row-label {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+      color: #1b1b1b;
+    }
+    .matrix-row-label span {
+      writing-mode: horizontal-tb;
+    }
+
+    /* Video cells */
+    .matrix-cell {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #111;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+      aspect-ratio: 16 / 9;
+    }
+    .matrix-cell video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      /* override global img styles */
+      border: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+    }
+    /* Performance badge */
+    .perf-badge {
+      position: absolute;
+      bottom: 6px;
+      right: 7px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .badge-low    { background: rgba(200,50,50,0.85);  color: #fff; }
+    .badge-mid    { background: rgba(220,140,20,0.85); color: #fff; }
+    .badge-high   { background: rgba(40,160,80,0.85);  color: #fff; }
+    .badge-expert { background: rgba(60,100,220,0.85); color: #fff; }
+
+    /* ---- Plots section ---- */
+    .plots-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0 40px;
+    }
+    .plot-card {
+      border: 1.5px solid #1b1b1b;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .plot-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+    }
+    .plot-caption {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      color: #555;
+      padding: 10px 14px 12px;
+      border-top: 1px solid #eee;
+    }
+    .plot-caption strong { color: #1b1b1b; }
+
+    /* ---- Insight boxes ---- */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin: 30px 0 50px;
+    }
+    .insight-box {
+      background: #1b1b1b;
+      color: #f5f5f5;
+      padding: 20px 22px;
+      border-radius: 10px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .insight-box .env-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .insight-box .winner-tag {
+      display: inline-block;
+      background: #fff;
+      color: #1b1b1b;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 700px) {
+      .plots-grid, .insights-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+
+    <span class="back-link"><a href="index.html">← VideoMimic</a></span>
+
+    <div class="hero-text">Locomotion Benchmarks</div>
+    <div class="sub-hero-text">Imitation &amp; reinforcement learning across four environments</div>
+
+    <div class="section" style="margin-top: -10px;">
+      We compare five methods on the MuJoCo continuous-control benchmark suite: pure behavioral cloning
+      (<b>BC</b>), on-policy policy gradient (<b>REINFORCE+GAE</b>), sequential BC-then-RL fine-tuning
+      (<b>PostBC</b>), our integrated imitation+RL approach (<b>IMRL</b>), and the off-policy
+      state-of-the-art baseline (<b>TD3</b>). Each row below shows rollout videos from a representative
+      episode; learning curves and per-environment analysis follow.
+    </div>
+
+    <!-- ======================================================
+         VIDEO MATRIX
+         rows = environments, cols = methods
+         ====================================================== -->
+    <div class="tagline" id="video-matrix">Video Matrix.</div>
+    <p class="figure-caption" style="text-align:left; padding:0; margin-bottom:18px;">
+      One representative rollout per method &times; environment. Hover a cell and click play,
+      or use the controls. Videos are episode&nbsp;0 from three independent seeds.
+    </p>
+
+    <div class="matrix-section">
+      <div class="matrix-scroll-wrapper">
+        <div class="method-matrix">
+
+          <!-- ===== HEADER ROW ===== -->
+          <div class="matrix-col-header matrix-corner" style="background:transparent;"></div>
+
+          <div class="matrix-col-header">
+            <span class="method-abbr">BC</span>
+            <span class="method-full">Behavioral Cloning</span>
+          </div>
+          <div class="matrix-col-header">
+            <span class="method-abbr">REINFORCE</span>
+            <span class="method-full">+GAE (on-policy)</span>
+          </div>
+          <div class="matrix-col-header">
+            <span class="method-abbr">PostBC</span>
+            <span class="method-full">BC → RL fine-tune</span>
+          </div>
+          <div class="matrix-col-header">
+            <span class="method-abbr">IMRL</span>
+            <span class="method-full">BC + RL (ours)</span>
+          </div>
+          <div class="matrix-col-header">
+            <span class="method-abbr">TD3</span>
+            <span class="method-full">Off-policy RL</span>
+          </div>
+
+          <!-- ===== ROW: HalfCheetah ===== -->
+          <div class="matrix-row-label"><span>HalfCheetah</span></div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/bc_HalfCheetah/bc_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ random</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/reinforce_HalfCheetah/reinforce_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ random</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/postbc_HalfCheetah/postbc_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ random</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_HalfCheetah/imrl_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-low">≈ random</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/td3_HalfCheetah/td3_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">~4 000 ret.</span>
+          </div>
+
+          <!-- ===== ROW: Hopper ===== -->
+          <div class="matrix-row-label"><span>Hopper</span></div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/bc_Hopper/bc_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">partial</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/reinforce_Hopper/reinforce_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/postbc_Hopper/postbc_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">partial</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_Hopper/imrl_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/td3_Hopper/td3_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">~1 500 ret.</span>
+          </div>
+
+          <!-- ===== ROW: Walker2d ===== -->
+          <div class="matrix-row-label"><span>Walker2d</span></div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/bc_Walker2d/bc_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">partial</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/reinforce_Walker2d/reinforce_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/postbc_Walker2d/postbc_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">partial</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_Walker2d/imrl_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/td3_Walker2d/td3_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">peaks ~2 500</span>
+          </div>
+
+          <!-- ===== ROW: Humanoid ===== -->
+          <div class="matrix-row-label"><span>Humanoid</span></div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/bc_Humanoid/bc_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">above random</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/reinforce_Humanoid/reinforce_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">strong</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/postbc_Humanoid/postbc_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">strong</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_Humanoid/imrl_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-expert">≈ expert!</span>
+          </div>
+
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/td3_Humanoid/td3_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">struggles</span>
+          </div>
+
+        </div><!-- end .method-matrix -->
+      </div><!-- end .matrix-scroll-wrapper -->
+    </div><!-- end .matrix-section -->
+
+    <p class="figure-caption" style="margin-top: -30px;">
+      <b>Table 1.</b> Representative rollout videos across four MuJoCo environments and five learning methods.
+      Hover any cell to play. Badge colors: <span style="background:#c83232;color:#fff;padding:1px 5px;border-radius:3px;font-size:11px;">red</span> ≈ near-random,
+      <span style="background:#dc8c14;color:#fff;padding:1px 5px;border-radius:3px;font-size:11px;">orange</span> = partial learning,
+      <span style="background:#28a050;color:#fff;padding:1px 5px;border-radius:3px;font-size:11px;">green</span> = strong performance,
+      <span style="background:#3c64dc;color:#fff;padding:1px 5px;border-radius:3px;font-size:11px;">blue</span> = near expert.
+    </p>
+
+    <!-- ======================================================
+         LEARNING CURVES
+         ====================================================== -->
+    <div class="tagline" id="learning-curves">Learning Curves.</div>
+
+    <div class="section" style="margin-top: -5px;">
+      The plots below show mean return (±1 std across 3 seeds) over 500k environment steps.
+      Dotted lines mark the <b>expert</b> and <b>random</b> baselines. Key takeaways are
+      highlighted in the analysis boxes beneath.
+    </div>
+
+    <div class="plots-grid">
+
+      <div class="plot-card">
+        <img src="../rob/figures/comparison_HalfCheetah.png"
+             alt="HalfCheetah method comparison">
+        <div class="plot-caption">
+          <strong>HalfCheetah-v4.</strong>
+          Expert return 9 417 &middot; Random &minus;284.
+          TD3 is the only method to escape the random baseline, climbing steadily to ~4 000 by
+          500k steps. Imitation-only methods (BC, PostBC, IMRL) are anchored near zero,
+          suggesting the expert demonstrations alone are insufficient to capture the
+          high-frequency gait dynamics required by this environment.
+        </div>
+      </div>
+
+      <div class="plot-card">
+        <img src="../rob/figures/comparison_Hopper.png"
+             alt="Hopper method comparison">
+        <div class="plot-caption">
+          <strong>Hopper-v4.</strong>
+          Expert return 1 228 &middot; Random 19.
+          All methods show meaningful learning. TD3 achieves the highest final return
+          (~1 500, surpassing expert) but with high variance. REINFORCE+GAE and IMRL
+          converge more smoothly, reaching ~600–800. BC provides a good head-start
+          before plateauing early.
+        </div>
+      </div>
+
+      <div class="plot-card">
+        <img src="../rob/figures/comparison_Walker2d.png"
+             alt="Walker2d method comparison">
+        <div class="plot-caption">
+          <strong>Walker2d-v4.</strong>
+          Expert return 3 765 &middot; Random 3.
+          TD3 achieves peak returns near 2 500 but is highly variable. IMRL (BC+RL)
+          follows a more stable learning trajectory, reaching ~1 200 reliably. Pure BC
+          and PostBC plateau quickly, confirming that expert demonstrations alone
+          cannot generalize to out-of-distribution states for this biped.
+        </div>
+      </div>
+
+      <div class="plot-card">
+        <img src="../rob/figures/comparison_Humanoid.png"
+             alt="Humanoid method comparison">
+        <div class="plot-caption">
+          <strong>Humanoid-v4.</strong>
+          Expert return 434 &middot; Random 123.
+          The most striking result: <b>IMRL reaches expert-level performance</b>
+          (~430) by 300k steps, while TD3 plateaus below random and never recovers.
+          In this high-dimensional control problem (17 DoF), the imitation signal is
+          critical for bootstrapping RL. REINFORCE+GAE also performs well, suggesting
+          on-policy methods benefit from the dense reward shaping in Humanoid.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================
+         PER-ENVIRONMENT INSIGHTS
+         ====================================================== -->
+    <div class="tagline" id="analysis">Analysis.</div>
+
+    <div class="insights-grid">
+
+      <div class="insight-box">
+        <span class="env-name">
+          HalfCheetah
+          <span class="winner-tag">TD3 wins</span>
+        </span>
+        A planar cheetah rewarded purely for forward velocity. The reward landscape is
+        smooth and dense, precisely where off-policy RL (TD3) shines. Imitation helps
+        little: the expert gait requires subtle body-pitch coordination that BC cannot
+        reliably capture from a sparse dataset, leaving IMRL at near-random levels.
+      </div>
+
+      <div class="insight-box">
+        <span class="env-name">
+          Hopper
+          <span class="winner-tag">TD3 wins (noisy)</span>
+        </span>
+        A single-legged hopper with a delicate balance. TD3 exceeds expert return
+        but at the cost of high variance — it finds aggressive policies not present
+        in the demonstrations. IMRL learns stably and safely. The imitation signal
+        here acts as a regularizer that prevents policy collapse in early training.
+      </div>
+
+      <div class="insight-box">
+        <span class="env-name">
+          Walker2d
+          <span class="winner-tag">TD3 wins (high var.)</span>
+        </span>
+        A bipedal walker requiring coordinated gait. All methods improve, but none
+        reach expert level within 500k steps. TD3 peaks highest but collapses
+        periodically. IMRL's joint optimization of imitation and RL maintains
+        stability while still improving, making it the most reliable mid-range choice.
+      </div>
+
+      <div class="insight-box">
+        <span class="env-name">
+          Humanoid
+          <span class="winner-tag">IMRL wins!</span>
+        </span>
+        A 17-DoF full humanoid — the hardest task. Pure RL (TD3) fails completely;
+        the exploration problem is too hard. BC provides a crucial initialization,
+        and IMRL's integrated training leverages it throughout learning, reaching
+        <b>expert-level performance</b>. This is the flagship result: in high-dimensional
+        control, combining imitation with RL is not just helpful — it is essential.
+      </div>
+
+    </div>
+
+    <div class="section" style="font-size: 17px; margin-top: -10px;">
+      <b>Summary.</b>
+      Across these four environments a clear pattern emerges: for tasks with simple, dense
+      reward landscapes (HalfCheetah, Hopper) off-policy RL remains the strongest stand-alone
+      baseline. As task complexity grows — particularly in the full Humanoid — the exploration
+      bottleneck becomes prohibitive for pure RL, and the combination of imitation learning
+      with RL (IMRL) becomes the only method to match expert behavior. PostBC offers a
+      lightweight middle ground but does not match the sample efficiency of joint optimization.
+    </div>
+
+  </div><!-- end .main-content -->
+
+  <div class="footer">
+    © UC Berkeley | Locomotion benchmarks page. Part of the
+    <span style="font-variant: small-caps;">VideoMimic</span> project.
+    <a href="index.html">Back to main page →</a>
+  </div>
+
+</body>
+</html>
