@@ -14,9 +14,9 @@
     }
     .method-matrix {
       display: grid;
-      grid-template-columns: 110px repeat(5, minmax(160px, 1fr));
+      grid-template-columns: 110px repeat(7, minmax(160px, 1fr));
       gap: 10px;
-      min-width: 900px;
+      min-width: 1200px;
     }
     .matrix-col-header {
       font-family: 'Roboto Mono', monospace;
@@ -262,6 +262,14 @@
             <span class="method-full">BC + RL (ours)</span>
           </div>
           <div class="matrix-col-header">
+            <span class="method-abbr">Dyna</span>
+            <span class="method-full">Model-based TD3</span>
+          </div>
+          <div class="matrix-col-header">
+            <span class="method-abbr">IMRL+TD3</span>
+            <span class="method-full">BC + TD3 (ours)</span>
+          </div>
+          <div class="matrix-col-header">
             <span class="method-abbr">TD3</span>
             <span class="method-full">Off-policy RL</span>
           </div>
@@ -295,6 +303,20 @@
               <source src="videos/imrl_HalfCheetah/imrl_HalfCheetah-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-low">≈ random</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/dyna_td3_HalfCheetah/dyna_td3_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_td3_HalfCheetah/imrl_td3_HalfCheetah-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">~3 500 ret.</span>
           </div>
           <div class="matrix-cell">
             <video muted loop playsinline preload="metadata"
@@ -337,6 +359,20 @@
           <div class="matrix-cell">
             <video muted loop playsinline preload="metadata"
                    onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/dyna_td3_Hopper/dyna_td3_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_td3_Hopper/imrl_td3_Hopper-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">~1 500 ret.</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
               <source src="videos/td3_Hopper/td3_Hopper-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-high">~1 500 ret.</span>
@@ -371,6 +407,20 @@
               <source src="videos/imrl_Walker2d/imrl_Walker2d-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-mid">improving</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/dyna_td3_Walker2d/dyna_td3_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-mid">improving</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_td3_Walker2d/imrl_td3_Walker2d-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">peaks ~2 500</span>
           </div>
           <div class="matrix-cell">
             <video muted loop playsinline preload="metadata"
@@ -413,6 +463,20 @@
           <div class="matrix-cell">
             <video muted loop playsinline preload="metadata"
                    onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/dyna_td3_Humanoid/dyna_td3_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-high">strong</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
+              <source src="videos/imrl_td3_Humanoid/imrl_td3_Humanoid-episode-0.mp4" type="video/mp4">
+            </video>
+            <span class="perf-badge badge-expert">≈ expert!</span>
+          </div>
+          <div class="matrix-cell">
+            <video muted loop playsinline preload="metadata"
+                   onmouseenter="this.play()" onmouseleave="this.pause()">
               <source src="videos/td3_Humanoid/td3_Humanoid-episode-0.mp4" type="video/mp4">
             </video>
             <span class="perf-badge badge-mid">struggles</span>
@@ -446,36 +510,46 @@
         <img src="figures/comparison_HalfCheetah.png" alt="HalfCheetah comparison">
         <div class="plot-caption">
           <strong>HalfCheetah-v4.</strong> Expert 9 417 · Random &minus;284.
-          TD3 is the only method to escape the random baseline, climbing steadily to ~4 000 by
-          500k steps. BC, PostBC, and IMRL remain anchored near zero — the expert gait requires
-          high-frequency coordination that imitation alone cannot capture.
+          TD3 and IMRL-TD3 are the clear leaders, both climbing to ~3 500–4 000 by 500k steps,
+          with IMRL-TD3 tracking TD3 closely throughout. Dyna-TD3 shows modest gains but fails
+          to match pure TD3, likely hindered by model compounding errors in the high-frequency
+          cheetah dynamics. All on-policy methods (BC, REINFORCE, IMRL, PostBC) remain anchored
+          near zero — the expert gait requires subtle body-pitch coordination that imitation alone
+          cannot capture.
         </div>
       </div>
       <div class="plot-card">
         <img src="figures/comparison_Hopper.png" alt="Hopper comparison">
         <div class="plot-caption">
-          <strong>Hopper-v4.</strong> Expert 1 228 · Random 19.
-          All methods show meaningful learning. TD3 achieves the highest final return (~1 500,
-          above expert) but with high variance. REINFORCE+GAE and IMRL converge more smoothly
-          to ~600–800. BC provides a head-start before plateauing early.
+          <strong>Hopper-v4.</strong> Expert 1 227 · Random 19.
+          TD3 and IMRL-TD3 both exceed expert return (~1 500–2 000) but with high variance —
+          both discover aggressive policies not present in the demonstrations. Dyna-TD3 learns
+          steadily but plateaus near expert level, suggesting the world model adds sample
+          efficiency without enabling the same aggressive policy search. On-policy methods
+          (REINFORCE, IMRL) converge stably to ~600–800; BC head-starts but plateaus early.
         </div>
       </div>
       <div class="plot-card">
         <img src="figures/comparison_Walker2d.png" alt="Walker2d comparison">
         <div class="plot-caption">
           <strong>Walker2d-v4.</strong> Expert 3 765 · Random 3.
-          TD3 achieves peak returns near 2 500 but is highly variable with periodic collapses.
-          IMRL follows a more stable trajectory, reaching ~1 200 reliably. Pure BC and PostBC
-          plateau quickly without the RL signal to escape the imitation regime.
+          TD3 and IMRL-TD3 are co-leaders (~2 500 peak) but both suffer periodic collapses.
+          Dyna-TD3 achieves comparable peaks with somewhat less variance, as the model provides
+          a smoothing effect over noisy environment transitions. On-policy IMRL reaches ~1 200
+          reliably — the most stable mid-range option. Pure BC and PostBC plateau quickly
+          without a sustained RL gradient.
         </div>
       </div>
       <div class="plot-card">
         <img src="figures/comparison_Humanoid.png" alt="Humanoid comparison">
         <div class="plot-caption">
           <strong>Humanoid-v4.</strong> Expert 434 · Random 123.
-          The flagship result: <b>IMRL reaches expert-level performance</b> (~430) by 300k steps.
-          TD3 plateaus below random and never recovers — the 17-DoF exploration space is
-          intractable for pure RL. The imitation signal is essential here.
+          The most revealing environment. <b>IMRL and IMRL-TD3 both reach expert-level
+          performance</b> (~430–500), with IMRL-TD3 showing slightly higher peak returns
+          due to off-policy stability. Dyna-TD3 improves meaningfully above random and
+          surpasses TD3, demonstrating that the world model partially compensates for the
+          exploration bottleneck in high-DoF settings. Pure TD3 plateaus well below expert
+          and never recovers — the 17-DoF space is intractable without an imitation signal.
         </div>
       </div>
     </div>
@@ -487,43 +561,51 @@
 
     <div class="insights-grid">
       <div class="insight-box">
-        <span class="env-name">HalfCheetah<span class="winner-tag">TD3 wins</span></span>
-        A planar cheetah rewarded for forward velocity. The dense, smooth reward landscape is
-        precisely where off-policy RL excels. Imitation helps little here: the expert gait requires
-        subtle body-pitch dynamics that BC cannot capture from limited demonstrations, leaving
-        IMRL pinned near zero alongside BC.
+        <span class="env-name">HalfCheetah<span class="winner-tag">TD3 / IMRL-TD3 tie</span></span>
+        A planar cheetah with a dense, smooth reward landscape — the ideal setting for off-policy
+        RL. TD3 and IMRL-TD3 are near-identical, confirming that the BC warm-start adds no
+        meaningful signal when the reward is already well-shaped. Dyna-TD3 lags: model-compounding
+        errors disrupt the fine motor coordination the cheetah gait requires. All on-policy methods
+        stay near zero — imitation alone is insufficient here.
       </div>
       <div class="insight-box">
-        <span class="env-name">Hopper<span class="winner-tag">TD3 wins (noisy)</span></span>
-        A single-legged hopper with delicate balance. TD3 exceeds expert return but at the cost
-        of high variance — it discovers aggressive policies absent from the demonstrations.
-        IMRL learns stably and safely, with the imitation signal acting as a regularizer that
-        prevents early policy collapse.
+        <span class="env-name">Hopper<span class="winner-tag">TD3 / IMRL-TD3 (noisy)</span></span>
+        A single-legged hopper where balance is fragile. TD3 and IMRL-TD3 both exceed expert
+        return but with high variance, discovering aggressive out-of-distribution policies.
+        Dyna-TD3 reaches expert level more reliably, suggesting the world model provides
+        implicit regularization. On-policy IMRL converges safely to ~600–800 — the imitation
+        signal prevents early collapse at the cost of a lower ceiling.
       </div>
       <div class="insight-box">
-        <span class="env-name">Walker2d<span class="winner-tag">TD3 wins (high var.)</span></span>
-        A bipedal walker requiring coordinated gait. TD3 peaks highest but collapses periodically.
-        IMRL's joint optimization maintains stability while still improving, making it the most
-        reliable mid-range choice when variance tolerance is low.
+        <span class="env-name">Walker2d<span class="winner-tag">TD3 / IMRL-TD3 (high var.)</span></span>
+        A bipedal walker requiring coordinated gait. TD3 and IMRL-TD3 peak equally high (~2 500)
+        but suffer periodic catastrophic collapses — the off-policy replay buffer can propagate
+        stale gradients. Dyna-TD3 shows similar peak performance with marginally fewer collapses.
+        On-policy IMRL remains the lowest-variance mid-range option; its joint imitation+RL
+        objective smooths the optimization landscape.
       </div>
       <div class="insight-box">
-        <span class="env-name">Humanoid<span class="winner-tag">IMRL wins!</span></span>
-        A 17-DoF full humanoid — the hardest task. Pure RL (TD3) fails completely; the
-        exploration problem is intractable without guidance. IMRL's integrated training leverages
-        the imitation signal throughout, reaching <b>expert-level performance</b>. In
-        high-dimensional control, combining imitation with RL is not just helpful — it is
-        essential.
+        <span class="env-name">Humanoid<span class="winner-tag">IMRL-TD3 wins!</span></span>
+        A 17-DoF full humanoid — the hardest task and the most revealing. Pure TD3 fails
+        completely; the exploration problem is intractable without guidance. Dyna-TD3 improves
+        over TD3 — the world model partially compensates — but plateaus well below expert.
+        Both IMRL variants succeed: on-policy IMRL and IMRL-TD3 reach <b>expert-level
+        performance</b>. IMRL-TD3 edges slightly higher, combining off-policy stability with
+        the imitation signal that makes the 17-DoF space tractable.
       </div>
     </div>
 
     <div class="section" style="margin-top: -10px;">
       <b>Summary.</b>
-      Across these four environments a consistent pattern emerges: for tasks with simple, dense
-      reward landscapes off-policy RL (TD3) remains the strongest stand-alone baseline. As task
-      complexity grows — particularly in the full 17-DoF Humanoid — the exploration bottleneck
-      becomes prohibitive for pure RL, and IMRL's combination of imitation with reinforcement
-      learning is the only method to match expert behavior. PostBC offers a lightweight middle
-      ground but does not match the sample efficiency of joint optimization.
+      Across all seven methods and four environments a consistent pattern emerges. For tasks with
+      simple, dense reward landscapes (HalfCheetah), off-policy RL (TD3, IMRL-TD3) dominates —
+      imitation and model-based planning add little. For mid-complexity locomotion (Hopper,
+      Walker2d), TD3 and IMRL-TD3 achieve the highest peaks but with high variance; Dyna-TD3
+      offers a useful stability trade-off while on-policy IMRL provides the safest convergence.
+      As task dimensionality grows (Humanoid), the exploration bottleneck becomes prohibitive
+      for pure RL: only methods combining imitation with RL (IMRL, IMRL-TD3) match expert
+      behavior, with IMRL-TD3 achieving the strongest result. Dyna-TD3's world model partially
+      compensates but cannot fully replace the imitation signal in high-DoF spaces.
     </div>
 
   </div><!-- end .main-content -->
